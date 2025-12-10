@@ -960,6 +960,17 @@ cc_library(
             "-Wl,-exported_symbol,_PjRtBufferFree",
             "-Wl,-exported_symbol,_UnsafeBufferPointer",
             "-Wl,-exported_symbol,_ArrayFromHostBuffer",
+
+            "-Wl,-exported_symbol,_MakePjrtBuffer",
+            "-Wl,-exported_symbol,_WaitUntilBufferReadyOnStream",
+            "-Wl,-exported_symbol,_GetBufferComputeStream",
+            "-Wl,-exported_symbol,_DataPointerToViewBuffer",
+            "-Wl,-exported_symbol,_DLManagedTensorToBufferInternal",
+            "-Wl,-exported_symbol,_BufferToDLPackManagedTensor",
+            "-Wl,-exported_symbol,_teste",
+            "-Wl,-exported_symbol,_CpuMinAlignment",
+            "-Wl,-exported_symbol,_MutableZeroCopyBufferFromHostBuffer",
+
             "-Wl,-exported_symbol,_BufferOnCPU",
             "-Wl,-exported_symbol,_CopyBufferToDevice",
             "-Wl,-exported_symbol,_BufferToHost",
@@ -1064,6 +1075,9 @@ cc_library(
     }),
     linkstatic = True,
     deps = [
+        "@dlpack//:dlpack",
+        "@xla//xla/python:strides",
+        "@xla//xla/python:dlpack_types",
         "@enzyme_ad//src/enzyme_ad/jax:RegistryUtils",
         "@enzyme//:EnzymeMLIR",
         "@llvm-project//mlir:AffineDialect",

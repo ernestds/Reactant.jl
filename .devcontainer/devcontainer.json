@@ -1,0 +1,57 @@
+{
+	"name": "build reactant",
+    // "build": { "dockerfile": "Dockerfile","context": "." },
+    "image": "nvidia/cuda:13.0.2-cudnn-devel-ubuntu24.04",
+	"runArgs": [
+        // "--cap-add=SYS_PTRACE", // enable debugging, e.g. gdb
+        "--ipc=host", // shared memory transport with host, e.g. rviz GUIs
+        "--network=host", // network access to host interfaces, e.g. eth0
+        // "--pid=host", // DDS discovery with host, without --network=host
+        "--privileged", // device access to host peripherals, e.g. USB
+        // "--gpus=all",
+        // "--device /dev/dri/"
+        
+    ],
+    // "initializeCommand": ".devcontainer/initialize_command.sh",
+    // "initializeCommand": "echo \"export USERNAME=$USER\nexport USER_UID=$(id -u $USER)\nexport GROUPNAME=$(id -gn $USER)\nexport GROUP_GID=$(id -g $USER)\" > .devcontainer/.env",
+    "containerEnv": {
+        "DISPLAY": ":0",
+        // "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
+        // "XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}",
+        "XAUTHORITY": "/home/${localEnv:USER}/.Xauthority",
+        "PULSE_SERVER": "${localEnv:PULSE_SERVER}",
+        // "SSH_AUTH_SOCK": "/ssh-agent"
+
+    },
+    
+    
+    // "mounts": [
+    //     "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind",
+    //     "source=/dev/dri/,target=/dev/dri/,type=bind",
+    //     "source=${localEnv:HOME}/.Xauthority,target=${localEnv:HOME}/.Xauthority,type=bind",
+    //     "type=bind,source=/home/${localEnv:USER}/.ssh,target=/home/${localEnv:USER}/.ssh,readonly"
+    //     // "source=${localEnv:SSH_AUTH_SOCK},target=/ssh-agent,type=bind"
+    //   ],
+	// "postCreateCommand": ".devcontainer/setup.sh",
+    "customizations": {
+        "vscode": {
+            // "settings": {
+            //     "python.analysis.extraPaths": [
+            //     "/opt/ros/humble/install/lib/python3.8/site-packages/"
+            // ]$},
+            "extensions": [
+                "esbenp.prettier-vscode",
+                "jeff-hykin.better-cpp-syntax",
+                "ms-vscode.cpptools-extension-pack",
+                "ms-python.python",
+                // "donjayamanne.python-environment-manager",
+                 "GitHub.copilot",
+                 "ms-toolsai.jupyter",
+                 "ms-toolsai.vscode-jupyter-powertoys",
+                // "ms-iot.vscode-ros",
+                // "streetsidesoftware.code-spell-checker",
+            ]
+        }
+    }
+  }
+  

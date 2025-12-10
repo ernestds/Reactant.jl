@@ -11,10 +11,13 @@ using Libdl
 # adapted from `cudaRuntimeGetVersion` in CUDA_Runtime_jll
 function cuDriverGetVersion(library_handle)
     function_handle = Libdl.dlsym(library_handle, "cuDriverGetVersion"; throw_error=false)
+    println("function_handle")
+    println(function_handle)
     if function_handle === nothing
         @debug "CUDA Driver library seems invalid (does not contain 'cuDriverGetVersion')"
         return nothing
     end
+
     version_ref = Ref{Cint}()
     status = ccall(function_handle, Cint, (Ptr{Cint},), version_ref)
     if status != 0
@@ -34,7 +37,8 @@ function get_cuda_version()
     else
         Libdl.find_library(["libcuda.so.1", "libcuda.so"])
     end
-
+    println("cuname")
+    println(cuname)
     if cuname == ""
         return nothing
     end
@@ -61,7 +65,7 @@ s = ArgParseSettings()
         default = something(Sys.which("gcc"), "/usr/bin/gcc")
         arg_type = String
     "--cc"
-        default = something(Sys.which("clang"), Sys.which("cc"), Sys.which("gcc"), "/usr/bin/cc")
+        default = something("/workspaces/Reactant.jl/deps/wrapper.sh",Sys.which("clang"),Sys.which("gcc"), Sys.which("cc"), "/usr/bin/cc") 
         arg_type = String
     "--hermetic_python_version"
         help = "Hermetic Python version."
@@ -205,11 +209,13 @@ if !isempty(gcc_host_compiler_path)
     push!(build_cmd_list, "--repo_env=GCC_HOST_COMPILER_PATH=$(gcc_host_compiler_path)")
 end
 push!(build_cmd_list, "--repo_env=CC=$(cc)")
+push!(build_cmd_list, "--repo_env=CXX=/usr/bin/g++")
 push!(build_cmd_list, "--check_visibility=false")
 push!(build_cmd_list, "--verbose_failures")
 push!(build_cmd_list, "--jobs=$(parsed_args["jobs"])")
 push!(build_cmd_list, "--experimental_ui_max_stdouterr_bytes=-1")
 push!(build_cmd_list, "--sandbox_debug")
+push!(build_cmd_list, "--sandbox_writable_path=/root/.cache/ccache/")
 
 push!(build_cmd_list, "--linkopt=-fuse-ld=lld")
 
@@ -244,6 +250,8 @@ else
     push!(build_cmd_list, "--copt=-Wno-unused-command-line-argument")
 end
 push!(build_cmd_list, "--copt=-Wno-private-header")
+
+
 push!(build_cmd_list, "--color=$(parsed_args["color"])")
 push!(build_cmd_list, ":libReactantExtra.so")
 

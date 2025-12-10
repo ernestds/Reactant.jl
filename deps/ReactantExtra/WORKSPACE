@@ -15,6 +15,24 @@ http_archive(
     urls = ["https://github.com/wsmoses/nsync/archive/{commit}.tar.gz".format(commit = NSYNC_COMMIT)],
 )
 
+
+
+http_archive(
+    name = "dlpack",
+    # You can update the URL/strip_prefix to a newer tag/commit if needed
+    urls = ["https://github.com/dmlc/dlpack/archive/refs/tags/v1.2.tar.gz"],
+    strip_prefix = "dlpack-1.2",
+    build_file_content = """
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "dlpack",
+    hdrs = glob(["include/**/*.h"]),
+    includes = ["include"],
+)
+""",
+)
+
 http_archive(
     name = "enzyme_ad",
     patch_cmds = [

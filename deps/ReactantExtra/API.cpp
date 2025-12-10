@@ -187,6 +187,9 @@ void registerGenerateApplyPatternsPass();
 
 namespace reactant {
 
+
+
+
 template <typename T> struct unwrap_type {
   typedef T type;
 };
@@ -1159,6 +1162,43 @@ REACTANT_ABI int64_t PjRtDeviceGetLocalHardwareId(PjRtDevice *device) {
   return device->local_hardware_id().value();
 }
 
+// #pragma region MYSTUFF
+// #include <dlpack/dlpack.h>
+// struct DLPackTensor {
+//   ~DLPackTensor();
+
+//   // `buffer_reference` is populated if we have shared (read-only) access.
+//   // nb::object buffer_reference;
+
+//   // `external_reference` is always populated.
+//   std::unique_ptr<xla::PjRtBuffer::ExternalReference> external_reference;
+
+//   std::vector<int64_t> shape;
+//   std::vector<int64_t> strides;
+//   DLManagedTensor tensor;
+// };
+
+// DLPackTensor::~DLPackTensor() {
+//   // We must release the external reference first before deleting the array.
+//   external_reference.reset();
+//   // if (buffer_reference) {
+//   //   GlobalPyRefManager()->AddGarbage(
+//   //       absl::MakeSpan(&buffer_reference, /*size=*/1));
+//   // }
+// }
+
+// void DLPackTensorDeleter(DLManagedTensor* t) {
+//   if (t) {
+//     delete static_cast<DLPackTensor*>(t->manager_ctx);
+//   }
+// }
+
+// #pragma endregion
+
+
+
+
+
 #include "xla/service/custom_call_target_registry.h"
 REACTANT_ABI void RegisterCustomCallTarget(const char *name, void *address,
                                            const char *platform) {
@@ -1402,13 +1442,15 @@ REACTANT_ABI void XLAExecuteSharded(xla::PjRtLoadedExecutable *exec,
   // Set up execution options.
   ExecuteOptions options;
   for (size_t i = 0; i < num_args; i++) {
-    if (!is_arg_donatable[i]) {
+    if (!is_arg_donatable[i]) 
       options.non_donatable_input_indices.insert(static_cast<int>(i));
-    }
+    
   }
+  options.untuple_result = true;
 
   // Optional future to hold asynchronous execution results.
   std::optional<xla::Future<>> returned_future;
+  // std::cout << "executing sharded\n";
 
   auto results = MyValueOrThrow(exec->ExecuteSharded(argument_handles, device,
                                                      options, returned_future,
@@ -1482,8 +1524,11 @@ REACTANT_ABI void XLAExecute(xla::PjRtLoadedExecutable *exec, int op_args_len,
 
   for (size_t i = 0; i < num_args; i++) {
     if (!is_arg_donatable[i])
-      options.non_donatable_input_indices.insert((int)i);
+    options.non_donatable_input_indices.insert((int)i);
+    // op_args[i]->ok();
   }
+  // std::cout << "executing\n";
+  options.untuple_result = true;
 
   std::optional<std::vector<FutureType>> returned_futures =
       std::vector<FutureType>();
