@@ -251,7 +251,6 @@ else
 end
 push!(build_cmd_list, "--copt=-Wno-private-header")
 
-
 push!(build_cmd_list, "--color=$(parsed_args["color"])")
 push!(build_cmd_list, ":libReactantExtra.so")
 
