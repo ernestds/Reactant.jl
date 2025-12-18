@@ -960,7 +960,6 @@ cc_library(
             "-Wl,-exported_symbol,_PjRtBufferFree",
             "-Wl,-exported_symbol,_UnsafeBufferPointer",
             "-Wl,-exported_symbol,_ArrayFromHostBuffer",
-
             "-Wl,-exported_symbol,_MakePjrtBuffer",
             "-Wl,-exported_symbol,_WaitUntilBufferReadyOnStream",
             "-Wl,-exported_symbol,_GetBufferComputeStream",
@@ -970,7 +969,6 @@ cc_library(
             "-Wl,-exported_symbol,_teste",
             "-Wl,-exported_symbol,_CpuMinAlignment",
             "-Wl,-exported_symbol,_MutableZeroCopyBufferFromHostBuffer",
-
             "-Wl,-exported_symbol,_BufferOnCPU",
             "-Wl,-exported_symbol,_CopyBufferToDevice",
             "-Wl,-exported_symbol,_BufferToHost",
